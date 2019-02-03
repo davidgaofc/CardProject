@@ -12,9 +12,10 @@ public class BlackJackGUIGao extends JFrame implements ActionListener
     //sets the JFrame size
     private static final int WIDTH = 1200;
     private static final int HEIGHT = 800;
-
+    //declare win count variables
     private int pWinCount, dWinCount;
-    //this variable is the area to which all text is written
+
+    //these variables are the areaa in which all text is written
     private JTextArea text;
     private JTextArea score;
 
@@ -30,23 +31,21 @@ public class BlackJackGUIGao extends JFrame implements ActionListener
     private PlayerGao starter;
     private PlayerGao hitPlayer;
 
-    //use these variables to keep track of the score
 
-    public BlackJackGUIGao()  // this is the constructor need to change it to gao
+    public BlackJackGUIGao()  //constructor
     {
-
+        //set the size of the jframe
         setSize(WIDTH,HEIGHT);
         //makes so it can't be changed as size
         this.setResizable(false);
 
-        //initialize all variables - player / pooter and the counts
 
 
         //this is the panel to which all objects will be added
 
 
         JPanel main = new JPanel();
-        //use X.AXIS or Y.AXIS
+        //implement layout of the main panel
         main.setLayout(new BorderLayout());
 
         //these panels will be used to divide the screen
@@ -54,66 +53,71 @@ public class BlackJackGUIGao extends JFrame implements ActionListener
         JPanel bot = new JPanel();
         JPanel left = new JPanel();
         JPanel right = new JPanel();
-
+        //title label for the top
         JLabel bljk = new JLabel("BLACKJACK");
+        //set the layout for the jpanels within the layout
         right.setLayout(new BoxLayout(right, BoxLayout.Y_AXIS));
         left.setLayout(new BoxLayout(left, BoxLayout.Y_AXIS));
-        //instantiate a new JTextArea
+        //instantiate JText Areas
         text = new JTextArea();
         score = new JTextArea(5,5);
 
+        //instantiate all of the players
         dealer = new PlayerGao(); // create a dealer
         player = new PlayerGao(); // create a player
         starter = new PlayerGao();
+
+        //start the game
         starter.shuffle();
         startHand();
 
-        //instantiate a new JButton and refer stat to it
 
 
+        // make everything visually appealling
         top.setBackground(new java.awt.Color(96, 31, 31));
         bot.setBackground(new java.awt.Color(96, 31, 31));
         left.setBackground(new java.awt.Color(96, 31, 31));
         right.setBackground(new java.awt.Color(96, 31, 31));
         text.setBackground(new java.awt.Color(53, 155, 51));
         text.setForeground(Color.WHITE);
+        bljk.setForeground(Color.CYAN);
 
-        //instantiate a new JButton and refer rock to it
+        //instantiate a new JButton and refer hit to it
         hit = new JButton("Hit");
         hit.setActionCommand("hit");
         hit.addActionListener(this);
         hit.setForeground(Color.GREEN);
 
-        //adds a picture
 
-        //instantiate a new JButton and refer paper to it
-        // HERE I NEED TO CREATE THE BUTTONS FOR ALL THINGS
+
+        //instantiate a new JButton and refer stand to it
         stand = new JButton("Stand");
         stand.setActionCommand("stand");
         stand.addActionListener(this);
         stand.setForeground(Color.RED);
 
+        //instantiate a new JButton and refer shuffle to it
         shuffle = new JButton("Shuffle");
         shuffle.setActionCommand("shuffle");
         shuffle.addActionListener(this);
         shuffle.setForeground(Color.ORANGE);
 
-        //adds a picture
-
+        //instantiate a new JButton and refer replay to it
         replay = new JButton("Replay");
         replay.setActionCommand("replay");
         replay.addActionListener(this);
         replay.setForeground(Color.BLUE);
 
-        bljk.setForeground(Color.CYAN);
-        //instantiate a new JButton and refer scissors to it
+        //add stand and hit buttons to the bottom jpanel
         bot.add(stand);
         bot.add(hit);
+        //add bottom jpanel to the bottom of the layout
         main.add(bot, BorderLayout.SOUTH);
 
-        //add all three buttons to the bottom panel
+        //add the buttons to the left panel
         left.add(replay);
         left.add(score);
+        //add pictures to the left panel
         try
         {
             BufferedImage img = ImageIO.read(getClass().getResource("pokerchip.png"));
@@ -130,8 +134,11 @@ public class BlackJackGUIGao extends JFrame implements ActionListener
         {
 
         }
+        //add the left panel to the layout
         main.add(left, BorderLayout.WEST);
+        //add the shuffle button to the right panel
         right.add(shuffle);
+        //add pics
         try
         {
             BufferedImage img = ImageIO.read(getClass().getResource("pokerchip.png"));
@@ -150,15 +157,16 @@ public class BlackJackGUIGao extends JFrame implements ActionListener
         {
 
         }
+        //add the right panel to the right part of the layout
         main.add(right, BorderLayout.EAST);
 
 
-        //add the text to the top panel
+        //add the title jlabel to the top
         top.add(bljk);
         main.add(text, BorderLayout.CENTER);
         main.add(top, BorderLayout.NORTH);
 
-        //add both panels to the main panel
+        //set all of the fonts
         bljk.setFont(new Font("BiauKai", Font.BOLD,50));
         text.setFont(new Font("Courier", Font.BOLD,20));
         score.setFont(new Font("Goudy Old Style", Font.ITALIC,40));
@@ -178,8 +186,8 @@ public class BlackJackGUIGao extends JFrame implements ActionListener
 
     }
 
-    //starts with 2 cards
-    public void startHand()
+
+    public void startHand() //method that begins a round
     {
 
         player.clearHand();;
@@ -193,48 +201,48 @@ public class BlackJackGUIGao extends JFrame implements ActionListener
         hitPlayer = player;
     }
 
-    public void actionPerformed (ActionEvent e)
+    public void actionPerformed (ActionEvent e) //method that is for button actions
     {
 
-        score.setText("Player: " + pWinCount + "\nDealer: " + dWinCount);
+        score.setText("Player: " + pWinCount + "\nDealer: " + dWinCount); //update score text area
         if (e.getActionCommand().equals("hit"))
         {
-            if ( hitPlayer != null  && !hitPlayer.isOver())
+            if ( hitPlayer != null  && !hitPlayer.isOver()) //check if you are allowed to hit
             {
-                hitPlayer.deal();
-                text.setText("Player: " + hitPlayer.giveInfo());
-                dealer.dealersTurn();
+                hitPlayer.deal(); //give card
+                text.setText("Player: " + hitPlayer.giveInfo()); //display info
+                dealer.dealersTurn(); //dealer's stuff
                 text.append("Dealer: " + dealer.giveInfo());
-                text.append(overRules());
+                text.append(overRules()); //check if anyone busted
             }
         }
         else if (e.getActionCommand().equals("stand"))
         {
 
-            dealer.dealersTurn();
-            text.setText(allRules());
+            dealer.dealersTurn(); //dealer's stuff
+            text.setText(allRules()); //checks busting and if you are more than the dealer
             if (hitPlayer != null)
             {
-                hitPlayer.setOver();
+                hitPlayer.setOver(); //makes it so that you cannot hit anymore
             }
             // Check if deal wants move card
             // Then caculate, display result
         }
         if(e.getActionCommand().equals("shuffle"))
         {
-            starter.shuffle();
-            startHand();
+            starter.shuffle(); //makes a new deck and shuffles it
+            startHand(); //starts a new hand
         }
         if (e.getActionCommand().equals("replay"))
         {
 
-            startHand();
+            startHand(); //lets you play again
 
         }
 
 
     }
-    public String overRules()
+    public String overRules() //rules if you do bust or not
     {
         if(player.getHandValue() > 21 && dealer.getHandValue() <= 21)
         {
@@ -261,29 +269,29 @@ public class BlackJackGUIGao extends JFrame implements ActionListener
         }
 
     }
-    public String allRules()
+    public String allRules() //checks over all of the rules
     {
-        if(player.getHandValue() > 21 && dealer.getHandValue() <= 21)
+        if(player.getHandValue() > 21 && dealer.getHandValue() <= 21) //when player busts and dealer doesn't
         {
             dWinCount++;
             return "Dealer WINS --- Player Busted\nclick replay to play again";
 
         }
-        else if(player.getHandValue() <= 21 && dealer.getHandValue() > 21)
+        else if(player.getHandValue() <= 21 && dealer.getHandValue() > 21) //when dealer busts but player doesn't
         {
             pWinCount++;
             return "Player WINS --- Dealer Busted\nclick replay to play again";
         }
-        else if(player.getHandValue()  > 21 && dealer.getHandValue() > 21)
+        else if(player.getHandValue()  > 21 && dealer.getHandValue() > 21) //when both bust
         {
             return "Both of you BUSTED --- no one wins\nclick replay to play again";
         }
-        else if(player.getHandValue() < dealer.getHandValue())
+        else if(player.getHandValue() < dealer.getHandValue()) //if dealer has larger score
         {
             dWinCount++;
             return "Dealer had a larger score --- Dealer Wins\nclick replay to play again";
         }
-        else if(player.getHandValue() > dealer.getHandValue())
+        else if(player.getHandValue() > dealer.getHandValue()) //if player has larger score
         {
             pWinCount++;
             return "Player had a larger score --- Player Wins\nclick replay to play again";
